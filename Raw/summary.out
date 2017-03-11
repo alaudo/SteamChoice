@@ -1,0 +1,36 @@
+
+
+ Class   Enrolled/Limit  Space   Description              ----- Choice -----
+                                                           1   2   3   4 1-4
+   67       34  /   48    14     Bug Superheroes           5  10  11   8  34
+   68       33  /   48    15     Egg Engineers             9   5  10   5  29
+   69       36  /   48    12     Blowing Bubbles           4   8  11  10  33
+   70       29  /   48    19     Garage Band Rockstars     9   6   7   6  28
+   71       38  /   48    10     Tumbling Towers          15   7   7   9  38
+   72       35  /   48    13     Fantastic Fossils         3  13  10  12  38
+   73       31  /   48    17     Lemonade Science          8   9   6   8  31
+   74       76  /   96    20     Making Ice Cream         28  16  15  11  70
+   78       39  /   48     9     Abracadabra              10  10   7  17  44
+   80       48  /   48     0     Treasure Hunt            16  13  12  12  53
+   82       37  /   48    11     Splat Attack              2  12  13  11  38
+
+Total enrolled: 436   Total shortage: 140
+
+
+
+ Class   Enrolled/Limit  Space   Description              ---- Enrolled ----
+                                                           1   2   3   4 1-4
+   67       34  /   48    14     Bug Superheroes           6   6  10  12  34
+   68       33  /   48    15     Egg Engineers             8  11   6   8  33
+   69       36  /   48    12     Blowing Bubbles          11   6   8  11  36
+   70       29  /   48    19     Garage Band Rockstars     5  11   6   7  29
+   71       38  /   48    10     Tumbling Towers           8  12  10   8  38
+   72       35  /   48    13     Fantastic Fossils        11   4  12   7  34
+   73       31  /   48    17     Lemonade Science          7  10   7   7  31
+   74       76  /   96    20     Making Ice Cream         17  24  19  17  77
+   78       39  /   48     9     Abracadabra              12  11   8   8  39
+   80       48  /   48     0     Treasure Hunt            12  12  12  12  48
+   82       37  /   48    11     Splat Attack             12   2  11  12  37
+
+
+
