@@ -10,10 +10,10 @@ public class Session {
     public Workshop Workshop;
     public int Position;
     public int Capacity;
-    public List<Choice> AssignedStudents;
+    public List<Choice> AssignedChoices;
 
     public Session () {
-        AssignedStudents = new ArrayList<>();
+        AssignedChoices = new ArrayList<>();
     }
 
 }
