@@ -24,6 +24,17 @@ public class Session {
         return Capacity;
     }
 
+    public boolean isFull () {
+        return getCapacity() < AssignedChoices.size();
+    }
+
+    public boolean assignChoice(Choice c) {
+        if (isFull()) return false;
+        AssignedChoices.add(c);
+        c.setSession(this);
+        return true;
+    }
+
     public Session(com.laurel.steam.Workshop workshop, int position, int capacity) {
         Workshop = workshop;
         Position = position;

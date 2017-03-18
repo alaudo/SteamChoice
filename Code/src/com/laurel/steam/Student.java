@@ -1,4 +1,5 @@
 package com.laurel.steam;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,12 +8,15 @@ import java.util.Map;
  * Created by alexg on 3/14/2017.
  */
 public class Student {
+    private final static double MAX_FITNESS = 100.0;
     private final String FirstName;
     private final String LastName;
     private final String Teacher;
 
     private final Map<Integer,Choice> Preferences;
     private final Map<Integer,Session> Sessions;
+
+    private double Fitness;
 
     public String getFirstName() {
         return FirstName;
@@ -32,6 +36,21 @@ public class Student {
 
     public Map<Integer, Session> getSessions() {
         return Sessions;
+    }
+
+    public double getFitness() {
+        return Fitness;
+    }
+
+
+    public void updateFitness() {
+        int nchoices = getPreferences().size();
+        double maxfit = Math.pow(2.0,nchoices + 1 ) - 1.0; // sum of 2^n
+        Fitness = 0.0;
+        getPreferences()
+                .forEach(
+                        (k,v) -> { if (v.isAssigned()) Fitness +=  Math.pow(2.0, nchoices - v.getPosition()) / maxfit; }
+                );
     }
 
     public Student(String firstName, String lastName, String teacher) {

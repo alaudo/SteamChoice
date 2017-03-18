@@ -3,7 +3,6 @@ package com.laurel.steam;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -31,12 +30,29 @@ public class SteamChoice {
         // reading data
         ReadInputFiles();
 
+        //AssignSessions
+        AssignSessions(Sessions);
+
+        System.out.println("Finished");
+
     }
 
-    public static void AssignPriority(int priority) {
+    public static void AssignSessions(List<Session> s) {
 
+        s.forEach(
+                session ->
+                {
+                            Choices
+                                .stream()
+                                .filter(ch -> ch.getWorkshop() == session.getWorkshop() && !ch.isAssigned())
+                                .sorted(Choice.getComparator())
+                                .limit(session.getCapacity())
+                                .forEach(
+                                        chs -> { session.assignChoice(chs); }
+                                );
+                }
+        );
     }
-
 
 
     public static void ReadInputFiles() {
