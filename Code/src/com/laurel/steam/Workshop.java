@@ -74,7 +74,7 @@ public class Workshop {
             writer.println(getSessions().get(i));
         }
 
-        writer.println("---------------------------------------------------------");
+        writer.println("----------------------------------------------------------------------");
 
         return stringWriter.toString();
     }

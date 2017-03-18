@@ -1,5 +1,6 @@
 package com.laurel.steam;
 
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -34,13 +35,23 @@ public class SteamChoice {
         AssignSessions(Sessions);
 
 
-        for(Workshop w: Workshops.values()) {
-            System.out.println(w.toString());
-        }
+        WriteReport("./data/report.txt");
 
         System.out.println("Finished");
 
     }
+
+    public static void WriteReport(String filename)
+    {
+        try(  PrintStream out = new PrintStream(new File(filename)) ){
+            for(Workshop w: Workshops.values()) {
+                out.println(w.toString());
+            }
+        } catch (Exception ex) {
+
+        }
+    }
+
 
     public static void AssignSessions(List<Session> s) {
 
