@@ -36,6 +36,7 @@ public class SteamChoice {
 
 
         WriteReport("./data/report.txt");
+        WriteCards("./data/cards.tsv");
 
         System.out.println("Finished");
 
@@ -46,6 +47,29 @@ public class SteamChoice {
         try(  PrintStream out = new PrintStream(new File(filename)) ){
             for(Workshop w: Workshops.values()) {
                 out.println(w.toString());
+            }
+        } catch (Exception ex) {
+
+        }
+    }
+
+    public static void WriteCards(String filename)
+    {
+        Workshop dworkshop = new Workshop(0, "", "", "");
+        Session dsession = new Session(dworkshop,0,0);
+        try(  PrintStream out = new PrintStream(new File(filename)) ){
+            out.println("student,teacher,n1,w1,l1,n2,w2,l2,n3,w3,l3,n4,w4,l4"); // header
+            for(Student s: Students) {
+                out.println(
+                        String.join(",",
+                                s.getFirstName() + " " + s.getLastName(),
+                                s.getTeacher(),
+                                "1", s.getSessions().getOrDefault(1, dsession).getWorkshop().getTitle(), s.getSessions().getOrDefault(1, dsession).getWorkshop().getLocation(),
+                                "2", s.getSessions().getOrDefault(2, dsession).getWorkshop().getTitle(), s.getSessions().getOrDefault(2, dsession).getWorkshop().getLocation(),
+                                "3", s.getSessions().getOrDefault(3, dsession).getWorkshop().getTitle(), s.getSessions().getOrDefault(3, dsession).getWorkshop().getLocation(),
+                                "4", s.getSessions().getOrDefault(4, dsession).getWorkshop().getTitle(), s.getSessions().getOrDefault(4, dsession).getWorkshop().getLocation()
+                                )
+                );
             }
         } catch (Exception ex) {
 
