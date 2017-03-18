@@ -1,5 +1,8 @@
 package com.laurel.steam;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,5 +62,20 @@ public class Workshop {
         }
 
         return w;
+    }
+
+    @Override
+    public String toString() {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter, true);
+        writer.println(Formatting.padToWidth(getId() + " "+ getTitle(), 70, getLocation().trim()));
+        writer.println(Formatting.padToWidth(" ",70, getLeader()));
+        for(int i = 1; i <= getSessions().size(); i++) {
+            writer.println(getSessions().get(i));
+        }
+
+        writer.println("---------------------------------------------------------");
+
+        return stringWriter.toString();
     }
 }

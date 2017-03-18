@@ -33,6 +33,11 @@ public class SteamChoice {
         //AssignSessions
         AssignSessions(Sessions);
 
+
+        for(Workshop w: Workshops.values()) {
+            System.out.println(w.toString());
+        }
+
         System.out.println("Finished");
 
     }
