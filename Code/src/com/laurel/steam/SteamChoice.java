@@ -17,7 +17,7 @@ public class SteamChoice {
     public static List<Session> Sessions;
     public static List<Choice> Choices;
 
-
+    public static List<Choice> BadLuck;
 
     public static void main(String[] args) {
 
@@ -26,11 +26,18 @@ public class SteamChoice {
         Workshops = new AllWorkshops();
         Sessions = new ArrayList<>();
         Choices = new ArrayList<>();
+        BadLuck = new ArrayList<>();
 
         // reading data
         ReadInputFiles();
 
     }
+
+    public static void AssignPriority(int priority) {
+
+    }
+
+
 
     public static void ReadInputFiles() {
         readWorkshops();
@@ -67,7 +74,7 @@ public class SteamChoice {
                     .skip(1) // first should be the header
                     .forEach(w -> {
                         Workshop ww = Workshop.FromString(w);
-                        Workshops.put(ww.Id,ww);
+                        Workshops.put(ww.getId(),ww);
                     });
         }
         catch (Exception ex)

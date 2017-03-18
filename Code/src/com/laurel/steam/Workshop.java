@@ -9,34 +9,55 @@ import java.util.Map;
  * Created by alexg on 3/14/2017.
  */
 public class Workshop {
-    public int Id;
-    public String Title;
-    public Map<Integer,Session> Sessions;
-    private String Leader;
-    private String Location;
+    private final int Id;
+    private final String Title;
+    private final String Leader;
+    private final String Location;
 
-    public Workshop () {
+    private final Map<Integer,Session> Sessions;
+
+    public int getId() {
+        return Id;
+    }
+
+    public String getTitle() {
+        return Title;
+    }
+
+    public String getLeader() {
+        return Leader;
+    }
+
+    public String getLocation() {
+        return Location;
+    }
+
+    public Map<Integer, Session> getSessions() {
+        return Sessions;
+    }
+
+    public Workshop(int id, String title, String leader, String location) {
+        Id = id;
+        Title = title;
+        Leader = leader;
+        Location = location;
         Sessions = new HashMap<>();
     }
 
     public static Workshop FromString(String s) {
-        Workshop w = new Workshop();
 
         String[] ss = s.split("\\t");
-        w.Id = Integer.parseInt(ss[0]);
+
+        Workshop w = new Workshop(Integer.parseInt(ss[0]), ss[6], ss[8], ss[7]);
+
         for(int i = 1; i < 6;i ++) {
-            Session es = new Session();
-            es.Capacity = Integer.parseInt(ss[i]);
-            es.Workshop = w;
-            es.Position = i;
-            w.Sessions.put(i,es);
+            Session es = new Session(w,i,Integer.parseInt(ss[i]));
+            w.getSessions().put(i,es);
 
             // adding to a global store
             SteamChoice.Sessions.add(es);
         }
-        w.Title = ss[6];
-        w.Location = ss[7];
-        w.Leader = ss[8];
+
         return w;
     }
 }
