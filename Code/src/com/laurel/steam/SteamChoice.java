@@ -36,7 +36,8 @@ public class SteamChoice {
 
 
         WriteReport("./data/report.txt");
-        WriteCards("./data/cards.tsv");
+        WriteCards("./data/cards.csv");
+        WriteSummary("./data/summary.txt");
 
         System.out.println("Finished");
 
@@ -49,6 +50,26 @@ public class SteamChoice {
                 out.println(w.toString());
             }
         } catch (Exception ex) {
+
+        }
+    }
+
+
+    public static void WriteSummary(String filename)
+    {
+        try(  PrintStream out = new PrintStream(new File(filename)) ){
+            out.println("");
+            out.println("");
+            out.println(" Wrkshop  Enrolled/Limit  Space   Description              ----- Choice -----");
+            out.println("");
+            for(Workshop w: Workshops.values()) {
+                out.println(
+                        String.format("%1$6d%2$10d  /%3$3d     %4$-7d%5$-20s", w.getId(), 34,23,23,w.getTitle())
+                );
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
 
         }
     }
