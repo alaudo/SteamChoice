@@ -61,7 +61,7 @@ public class SteamChoice {
         try(  PrintStream out = new PrintStream(new File(filename)) ){
             out.println("");
             out.println("");
-            out.println(" Wrkshop  Enrolled/Limit  Space   Description              ----- Choice -----");
+            out.println(" Wrkshop  SignedUp/Limit  Space   Description              ----- Choice -----");
             out.println("                                                            1   2   3  4  1-4");
             for(Workshop w: Workshops.values()) {
                 long enrolled =
@@ -88,14 +88,26 @@ public class SteamChoice {
                                     available,
                                     available - enrolled,
                                     w.getTitle(),
-                                    chs.get(1),
-                                    chs.get(2),
-                                    chs.get(3),
-                                    chs.get(4),
+                                    chs.getOrDefault(1,0l),
+                                    chs.getOrDefault(2,0l),
+                                    chs.getOrDefault(3,0l),
+                                    chs.getOrDefault(4,0l),
                                     chs.values().stream().mapToLong(a -> a).sum()
                                 )
                 );
             }
+
+            long totalenrolled =
+                    Choices.stream()
+                            .filter(c -> c.isAssigned())
+                            .count();
+
+            long totalshortage =
+                    Choices.stream()
+                            .filter(c -> !c.isAssigned() && c.getPosition() <= 4)
+                            .count();
+
+            out.println(String.format("Total enrolled: %1$4d   Total shortage: %2$4d",totalenrolled, totalshortage));
 
             out.println("");
             out.println("");
@@ -173,7 +185,9 @@ public class SteamChoice {
                 {
                             Choices
                                 .stream()
-                                .filter(ch -> ch.getWorkshop() == session.getWorkshop() && !ch.isAssigned())
+                                .filter(ch -> ch.getWorkshop() == session.getWorkshop() // same workshop
+                                        && !ch.isAssigned() && // which is still not assigned
+                                        ch.getStudent().getSessions().get(session.getPosition()) == null) // and no other colliding session
                                 .sorted(Choice.getComparator())
                                 .limit(session.getCapacity())
                                 .forEach(
