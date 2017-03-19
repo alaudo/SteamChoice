@@ -39,6 +39,7 @@ public class SteamChoice {
         WriteReport("./data/report.txt");
         WriteCards("./data/cards.csv");
         WriteSummary("./data/summary.txt");
+        WriteStatistics("./data/statistics.txt");
 
         System.out.println("Finished");
 
@@ -54,6 +55,34 @@ public class SteamChoice {
 
         }
     }
+
+    public static void WriteStatistics(String filename)
+    {
+        try(  PrintStream out = new PrintStream(new File(filename)) ){
+            Workshop dworkshop = new Workshop(0, "", "", "");
+            Session dsession = new Session(dworkshop,0,0);
+            out.println("");
+            out.println("");
+            out.println(" Wrkshop  SignedUp/Limit  Space   Description              ----- Choice -----");
+            out.println("                                                            1   2   3  4  1-4");
+            for(Student s: Students.stream().sorted((l,r) -> l.getLastName().compareToIgnoreCase(r.getLastName())).collect(Collectors.toList())) {
+                List<String> prefs = s.getPreferences().values().stream().map( c -> (c.isAssigned()) ? Integer.toString(c.getSession().getPosition()) : "*").collect(Collectors.toList());
+                out.println(
+                        String.format("%1$6s%2$10s%3$5 ",
+                                s.getLastName() + ", " + s.getFirstName(),
+                                s.getTeacher(),
+                                s.getFitness(),
+                                prefs
+                        )
+                );
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+
+        }
+    }
+
 
 
     public static void WriteSummary(String filename)
