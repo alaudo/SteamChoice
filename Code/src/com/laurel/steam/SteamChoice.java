@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -61,10 +62,77 @@ public class SteamChoice {
             out.println("");
             out.println("");
             out.println(" Wrkshop  Enrolled/Limit  Space   Description              ----- Choice -----");
-            out.println("");
+            out.println("                                                            1   2   3  4  1-4");
             for(Workshop w: Workshops.values()) {
+                long enrolled =
+                        Choices.stream()
+                        .filter(c -> c.getWorkshop() == w)
+                        .count();
+
+                long available =
+                        w.getSessions()
+                                .values()
+                                .stream()
+                                .mapToInt(Session::getCapacity)
+                                .sum();
+
+                Map<Integer,Long> chs =
+                        Choices.stream()
+                                .filter(c -> c.getWorkshop() == w)
+                                .collect(Collectors.groupingBy(Choice::getPosition,Collectors.counting()));
+
                 out.println(
-                        String.format("%1$6d%2$10d  /%3$3d     %4$-7d%5$-20s", w.getId(), 34,23,23,w.getTitle())
+                        String.format("%1$6d%2$10d  /%3$3d     %4$-7d%5$-23s%6$4d%7$4d%8$4d%9$4d%10$4d",
+                                w.getId(),
+                                    enrolled,
+                                    available,
+                                    available - enrolled,
+                                    w.getTitle(),
+                                    chs.get(1),
+                                    chs.get(2),
+                                    chs.get(3),
+                                    chs.get(4),
+                                    chs.values().stream().mapToLong(a -> a).sum()
+                                )
+                );
+            }
+
+            out.println("");
+            out.println("");
+            out.println(" Wrkshop  Enrolled/Limit  Space   Description              ---- Enrolled ----");
+            out.println("                                                            1   2   3  4  1-4");
+            for(Workshop w: Workshops.values()) {
+                long enrolled =
+                        Choices.stream()
+                                .filter(c -> c.getWorkshop() == w && c.isAssigned())
+                                .count();
+
+                long available =
+                        w.getSessions()
+                                .values()
+                                .stream()
+                                .mapToInt(Session::getCapacity)
+                                .sum();
+
+                Map<Integer,Long> chs =
+                        Choices.stream()
+                                .filter(c -> c.getWorkshop() == w && c.isAssigned())
+                                .map(d -> d.getSession())
+                                .collect(Collectors.groupingBy(Session::getPosition,Collectors.counting()));
+
+                out.println(
+                        String.format("%1$6d%2$10d  /%3$3d     %4$-7d%5$-23s%6$4d%7$4d%8$4d%9$4d%10$4d",
+                                w.getId(),
+                                enrolled,
+                                available,
+                                available - enrolled,
+                                w.getTitle(),
+                                chs.getOrDefault(1,0l),
+                                chs.getOrDefault(2,0l),
+                                chs.getOrDefault(3,0l),
+                                chs.getOrDefault(4,0l),
+                                chs.values().stream().mapToLong(a -> a).sum()
+                        )
                 );
             }
 
