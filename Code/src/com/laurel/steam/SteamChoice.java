@@ -63,12 +63,11 @@ public class SteamChoice {
             Session dsession = new Session(dworkshop,0,0);
             out.println("");
             out.println("");
-            out.println(" Wrkshop  SignedUp/Limit  Space   Description              ----- Choice -----");
-            out.println("                                                            1   2   3  4  1-4");
+            out.println(" Student                      Teacher       Fitness   -- Sessions --");
             for(Student s: Students.stream().sorted((l,r) -> l.getLastName().compareToIgnoreCase(r.getLastName())).collect(Collectors.toList())) {
-                List<String> prefs = s.getPreferences().values().stream().map( c -> (c.isAssigned()) ? Integer.toString(c.getSession().getPosition()) : "*").collect(Collectors.toList());
+                String prefs = String.join("  ", s.getPreferences().values().stream().map( c -> (c.isAssigned()) ? Integer.toString(c.getSession().getPosition()) : "*").collect(Collectors.toList()));
                 out.println(
-                        String.format("%1$6s%2$10s%3$5 ",
+                        String.format( "%1$-30s%2$-13s %3$6f   %4$13s",
                                 s.getLastName() + ", " + s.getFirstName(),
                                 s.getTeacher(),
                                 s.getFitness(),

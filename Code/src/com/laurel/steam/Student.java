@@ -1,14 +1,12 @@
 package com.laurel.steam;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by alexg on 3/14/2017.
  */
 public class Student {
     private final static double MAX_FITNESS = 100.0;
+    private final static int[] FITNESS_VALUES = { 1, 2, 3, 5, 8, 13, 21, 34, 55 };
     private final String FirstName;
     private final String LastName;
     private final String Teacher;
@@ -45,11 +43,11 @@ public class Student {
 
     public void updateFitness() {
         int nchoices = getPreferences().size();
-        double maxfit = Math.pow(2.0,nchoices + 1 ) - 1.0; // sum of 2^n
+        double maxfit = Arrays.stream(FITNESS_VALUES).limit(nchoices).sum(); // sum of fitness
         Fitness = 0.0;
         getPreferences()
                 .forEach(
-                        (k,v) -> { if (v.isAssigned()) Fitness +=  Math.pow(2.0, nchoices - v.getPosition()) / maxfit; }
+                        (k,v) -> { if (v.isAssigned()) Fitness +=  FITNESS_VALUES[nchoices - v.getPosition()] / maxfit; }
                 );
     }
 
@@ -67,7 +65,7 @@ public class Student {
 
         String[] ss = s.split("\\t");
 
-        Student st = new Student(ss[1],ss[0],ss[1]);
+        Student st = new Student(ss[1],ss[0],ss[2]);
 
         for(int i = 1; i < 6;i++) {
             if (ss[i + 3] == "0") break;
