@@ -63,7 +63,7 @@ public class SteamChoice {
             Session dsession = new Session(dworkshop,0,0);
             out.println("");
             out.println("");
-            out.println(" Student                      Teacher       Fitness   -- Sessions --");
+            out.println(" Student                      Teacher       Fitness    --- Choices ----");
             for(Student s: Students.stream().sorted((l,r) -> l.getLastName().compareToIgnoreCase(r.getLastName())).collect(Collectors.toList())) {
                 String prefs = String.join("  ", s.getPreferences().values().stream().map( c -> (c.isAssigned()) ? Integer.toString(c.getSession().getPosition()) : "*").collect(Collectors.toList()));
                 out.println(

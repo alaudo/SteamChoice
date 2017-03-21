@@ -67,10 +67,10 @@ public class Student {
 
         Student st = new Student(ss[1],ss[0],ss[2]);
 
-        for(int i = 1; i < 6;i++) {
-            if (ss[i + 3] == "0") break;
+        for(int i = 1; i <= 6;i++) {
+            if (ss[i + 2] == "0") break;
 
-            Choice es = new Choice(st, i, SteamChoice.Workshops.get(Integer.parseInt(ss[i + 3])));
+            Choice es = new Choice(st, i, SteamChoice.Workshops.get(Integer.parseInt(ss[i + 2])));
 
             st.getPreferences().put(i,es);
 
