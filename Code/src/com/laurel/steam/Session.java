@@ -27,7 +27,7 @@ public class Session {
     }
 
     public boolean isFull () {
-        return getCapacity() < AssignedChoices.size();
+        return getCapacity() <= AssignedChoices.size();
     }
 
     public boolean assignChoice(Choice c) {

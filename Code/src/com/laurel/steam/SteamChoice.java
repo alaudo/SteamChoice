@@ -244,23 +244,28 @@ public class SteamChoice {
 
 
     public static void AssignSessions(List<Session> s) {
+        Random random = new Random();
 
-        s
-                .forEach(
-                    session ->
-                    {
-                                Choices
-                                    .stream()
-                                    .filter(ch -> ch.getWorkshop() == session.getWorkshop() // same workshop
-                                            && !ch.isAssigned() && // which is still not assigned
-                                            ch.getStudent().getSessions().get(session.getPosition()) == null) // and no other colliding session
-                                    .sorted(Choice.getComparator())
-                                    .limit(session.getCapacity())
-                                    .forEach(
-                                            chs -> { session.assignChoice(chs); }
-                                    );
-                    }
-        );
+
+        for(int i = 0; i < 10000; i++) {
+            int index = random.nextInt(s.size());
+            Session session = s.get(index);
+            if (session.isFull()) continue;
+
+            Choices
+                    .stream()
+                    .filter(ch -> ch.getWorkshop() == session.getWorkshop() // same workshop
+                            && !ch.isAssigned() && // which is still not assigned
+                            ch.getStudent().getSessions().get(session.getPosition()) == null) // and no other colliding session
+                    .sorted(Choice.getComparator())
+                    // .limit(session.getCapacity())
+                    .limit(1)
+                    .forEach(
+                            chs -> {
+                                session.assignChoice(chs);
+                            }
+                    );
+        }
     }
 
 
