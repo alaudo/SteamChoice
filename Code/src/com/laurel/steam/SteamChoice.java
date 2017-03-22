@@ -3,9 +3,7 @@ package com.laurel.steam;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +30,11 @@ public class SteamChoice {
         // reading data
         ReadInputFiles();
 
+        long seed = System.nanoTime();
+        Collections.shuffle(Sessions, new Random(seed));
+        Collections.shuffle(Students, new Random(seed));
+        // Sessions.sort(Comparator.comparingInt(Session::getPosition));
+
         //AssignSessions
         AssignSessions(Sessions);
 
@@ -40,6 +43,7 @@ public class SteamChoice {
         WriteCards("./data/cards.csv");
         WriteSummary("./data/summary.txt");
         WriteStatistics("./data/statistics.txt");
+        WriteBadluck("./data/badluck.txt");
 
         System.out.println("Finished");
 
@@ -52,6 +56,39 @@ public class SteamChoice {
                 out.println(w.toString());
             }
         } catch (Exception ex) {
+
+        }
+    }
+
+    public static void WriteBadluck(String filename)
+    {
+        try(  PrintStream out = new PrintStream(new File(filename)) ){
+            Workshop dworkshop = new Workshop(0, "", "", "");
+            Session dsession = new Session(dworkshop,0,0);
+
+            out.println("");
+
+                Choices.stream().filter(s -> !s.isAssigned() && s.getWorkshop() != null).collect(Collectors.groupingBy(Choice::getPosition)).forEach(
+                        (pref,lchoices) -> {
+                            out.println("");
+                            out.println("Missed " + pref + " choice: ");
+                            out.println("");
+                            lchoices.forEach(
+                                    ch -> {
+                                        out.println(
+                                                String.format( "%1$-30s %2$-23s",
+                                                        ch.getStudent().getLastName() + ", " + ch.getStudent().getFirstName(),
+                                                        ch.getWorkshop().getTitle()
+                                                        )
+                                        );
+                                    }
+                            );
+                            out.println("--------------------------------------------------------");
+                        }
+                );
+
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
 
         }
     }
@@ -208,20 +245,21 @@ public class SteamChoice {
 
     public static void AssignSessions(List<Session> s) {
 
-        s.forEach(
-                session ->
-                {
-                            Choices
-                                .stream()
-                                .filter(ch -> ch.getWorkshop() == session.getWorkshop() // same workshop
-                                        && !ch.isAssigned() && // which is still not assigned
-                                        ch.getStudent().getSessions().get(session.getPosition()) == null) // and no other colliding session
-                                .sorted(Choice.getComparator())
-                                .limit(session.getCapacity())
-                                .forEach(
-                                        chs -> { session.assignChoice(chs); }
-                                );
-                }
+        s
+                .forEach(
+                    session ->
+                    {
+                                Choices
+                                    .stream()
+                                    .filter(ch -> ch.getWorkshop() == session.getWorkshop() // same workshop
+                                            && !ch.isAssigned() && // which is still not assigned
+                                            ch.getStudent().getSessions().get(session.getPosition()) == null) // and no other colliding session
+                                    .sorted(Choice.getComparator())
+                                    .limit(session.getCapacity())
+                                    .forEach(
+                                            chs -> { session.assignChoice(chs); }
+                                    );
+                    }
         );
     }
 
