@@ -242,10 +242,43 @@ public class SteamChoice {
         }
     }
 
-
     public static void AssignSessions(List<Session> s) {
-        Random random = new Random();
 
+        for(int i = 1; i <= 6; i ++) {
+
+            // find all sessions of this choice
+            int finalI = i;
+            Choices
+                    .stream()
+                    .filter(ch -> !ch.isAssigned() && ch.getPosition() <= finalI) // which is still not assigned
+                    .sorted(Choice.getComparator())
+                    .forEach(
+                            ss -> {
+                                List<Session> assignss =
+                                Sessions
+                                    .stream()
+                                        .filter(p -> p.getWorkshop() == ss.getWorkshop() // same workshop
+                                                 && !p.isFull()
+                                                && ss.getStudent().getSessions().get(p.getPosition()) == null) // and no other colliding session
+                                        .collect(Collectors.toList());
+
+                                Collections.shuffle(assignss);
+
+                                Optional<Session> assigns = assignss.stream().findFirst();
+
+                                if (assigns.isPresent()) {
+                                    assigns.get().assignChoice(ss);
+                                }
+                            }
+                    );
+        }
+
+    }
+
+
+
+    public static void AssignSessionsStochastic(List<Session> s) {
+        Random random = new Random();
 
         for(int i = 0; i < 10000; i++) {
             int index = random.nextInt(s.size());
