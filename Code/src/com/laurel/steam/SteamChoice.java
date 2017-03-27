@@ -4,7 +4,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -55,8 +57,39 @@ public class SteamChoice {
             for(Workshop w: Workshops.values()) {
                 out.println(w.toString());
             }
-        } catch (Exception ex) {
 
+            out.println("===================================================");
+
+            Students
+               .stream()
+                    .map(Student::getTeacher)
+                    .distinct()
+                    .sorted()
+                    .forEach(
+                            t ->
+                            {
+                                out.println("   Teacher " + t + " --  Student Information");
+                                List<Student> slist =
+                                Students
+                                        .stream()
+                                        .filter(st -> st.getTeacher().equalsIgnoreCase(t))
+                                        .sorted(Comparator.comparing(Student::getLastName).thenComparing(Student::getFirstName))
+                                        .collect(Collectors.toList());
+                                // since we don't have an iterator with running number, we need to go with indices
+                                IntStream.range(0, slist.size())
+                                        .forEach(i ->
+                                                {
+                                                    Student cst = slist.get(i);
+                                                    out.println(String.format("%1$3d   %2$-20s",i + 1, cst.getLastName() + ", " + cst.getFirstName() ));
+                                                }
+                                        );
+                            }
+                    );
+
+
+
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
         }
     }
 
