@@ -81,12 +81,83 @@ public class SteamChoice {
                                                 {
                                                     Student cst = slist.get(i);
                                                     out.println(String.format("%1$3d   %2$-20s",i + 1, cst.getLastName() + ", " + cst.getFirstName() ));
+                                                    IntStream.range(1,7)
+                                                            .forEach(
+                                                              tt ->
+                                                              {
+                                                                  if (!cst.getSessions().keySet().contains(tt)) return;
+                                                                  Session s = cst.getSessions().get(tt);
+                                                                  out.println(String.format("%1$10d %2$-30s %3$-30s %4$2d", s.getWorkshop().getId(), s.getWorkshop().getTitle(), s.getWorkshop().getLocation(), s.getChoice(cst)));
+                                                              }
+                                                            );
+                                                }
+                                        );
+                                out.println();
+                                out.println("^^");
+                            }
+                    );
+
+            out.println("===================================================");
+
+
+            IntStream.range(1,6)
+            .forEach(
+                    ses ->
+                    {
+                        Students
+                                .stream()
+                                .map(Student::getTeacher)
+                                .distinct()
+                                .sorted()
+                                .forEach(
+                                        t ->
+                                        {
+                                            out.println("^^");
+                                            out.println("   Teacher " + t + " --  Destinations for session " + ses);
+                                            Map<Integer, List<Choice>> clist =
+                                                    Choices
+                                                            .stream()
+                                                            .filter(ct -> ct.getStudent().getTeacher().equalsIgnoreCase(t) // same teacher
+                                                                    && ct.isAssigned() // only assigned
+                                                              && ct.getSession().getPosition() == ses // session position
+                                                            )
+                                                            .collect(Collectors.groupingBy(c -> c.getWorkshop().getId()));
+
+                                            for(Integer id:clist.keySet()) {
+                                                out.println();
+                                                for(Choice ch:clist.get(id)) {
+                                                    Workshop w = ch.getWorkshop();
+                                                    Student stc = ch.getStudent();
+                                                    out.println(String.format("%1$10d %2$-30s %3$-20s %4$-20s", w.getId(), w.getTitle(), w.getLocation(), stc.getLastName() + ", " + stc.getFirstName()));
+                                                }
+
+                                            }
+
+                                        }
+                                );
+                    }
+            );
+
+            out.println("===================================================");
+
+            Students
+                    .stream()
+                    .sorted(Comparator.comparing(Student::getLastName).thenComparing(Student::getFirstName))
+                    .forEach(cst ->
+                            {
+                                out.println(String.format("  %1$-30s %2$-20s", cst.getLastName() + ", " + cst.getFirstName(), cst.getTeacher() ));
+
+                                IntStream.range(1,7)
+                                        .forEach(
+                                                tt ->
+                                                {
+                                                    if (!cst.getSessions().keySet().contains(tt)) return;
+                                                    Session s = cst.getSessions().get(tt);
+                                                    out.println(String.format("%1$10d %2$-30s %3$-30s %4$2d", s.getWorkshop().getId(), s.getWorkshop().getTitle(), s.getWorkshop().getLocation(), s.getChoice(cst)));
                                                 }
                                         );
                             }
                     );
-
-
 
         } catch (Exception ex) {
             System.out.println(ex.toString());
@@ -148,7 +219,6 @@ public class SteamChoice {
 
         } catch (Exception ex) {
             System.out.println(ex.toString());
-
         }
     }
 
@@ -304,6 +374,45 @@ public class SteamChoice {
                             }
                     );
         }
+
+        int snum = Students.stream().mapToInt(st -> st.getSessions().size()).max().getAsInt();
+
+        Students
+          .stream()
+          .filter(st -> st.getSessions().size() < snum)
+          .forEach(
+                  st ->
+                  {
+                      String teacher = st.getTeacher();
+
+                      List<Session> sessions =
+                      Choices
+                            .stream()
+                            .filter(cc ->
+                                    cc.getStudent().getTeacher().compareToIgnoreCase(teacher) == 0 // same class
+                                    && cc.isAssigned() // and assigned
+                            )
+                            .map(cc -> cc.getSession()) // sessions from his classmates
+                            .filter(
+                                    ss -> !ss.isFull()
+                            )
+                              .sorted(Comparator.comparingInt(Session::getAvailable).reversed())
+                              .collect(Collectors.toList());
+
+                      for(Session ss:sessions) {
+                          if (!st.getSessions().values().stream().map(Session::getWorkshop).collect(Collectors.toList()).contains(ss.getWorkshop()) // not already in this workshop
+                                && st.getSessions().values().stream().mapToInt(Session::getPosition).noneMatch(i -> i == ss.getPosition()) // and this slot is not reserverd
+                                  ) {
+                              Choice newch = new Choice(st,6,ss.getWorkshop());
+                              st.getPreferences().put(ss.getPosition(), newch);
+                              ss.assignChoice(newch);
+                              Choices.add(newch);
+                          }
+                      }
+                  }
+          );
+        ;
+
 
     }
 

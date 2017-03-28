@@ -34,6 +34,13 @@ public class Session {
         return getCapacity() <= AssignedChoices.size();
     }
 
+    public int getChoice(Student s) {
+        if (!AssignedChoices.stream().anyMatch(st -> st.getStudent() == s)) return -1;
+        Choice chs = AssignedChoices.stream().filter(ch -> ch.getStudent() == s).findAny().get();
+        return chs.getPosition();
+
+    }
+
     public boolean assignChoice(Choice c) {
         if (isFull()) return false;
         AssignedChoices.add(c);
