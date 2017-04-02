@@ -20,8 +20,30 @@ public class SteamChoice {
 
     public static List<Choice> BadLuck;
 
+    public static MainForm form;
+    public static String studentDataFile;
+    public static String workshopDataFile;
+    public static String outputFolder;
+    public static Boolean assignRandomly;
+
     public static void main(String[] args) {
 
+
+
+        // opening main form
+        form = MainForm.main(null);
+
+    }
+
+    public static void ReadDataFromForm(MainForm frm) {
+        studentDataFile = frm.getStudentFile();
+        workshopDataFile = frm.getWorkshopFile();
+        outputFolder = frm.getOutputFolder();
+        assignRandomly = frm.getAssignmentChoice();
+    }
+
+    public static void DoAssignment()
+    {
         // instantiating the core holders
         Students = new AllStudents();
         Workshops = new AllWorkshops();
@@ -29,6 +51,7 @@ public class SteamChoice {
         Choices = new ArrayList<>();
         BadLuck = new ArrayList<>();
 
+        ReadDataFromForm(form);
         // reading data
         ReadInputFiles();
 
@@ -41,18 +64,30 @@ public class SteamChoice {
         AssignSessions(Sessions);
 
 
-        WriteReport("./data/report.txt");
-        WriteCards("./data/cards.csv");
-        WriteSummary("./data/summary.txt");
-        WriteStatistics("./data/statistics.txt");
-        WriteBadluck("./data/badluck.txt");
+        WriteReport(GetOutputFileName("report.txt"));
+        WriteCards(GetOutputFileName("cards.csv"));
+        WriteSummary(GetOutputFileName("summary.txt"));
+        WriteStatistics(GetOutputFileName("statistics.txt"));
+        WriteBadluck(GetOutputFileName("badluck.txt"));
 
-        System.out.println("Finished");
-
+        LogToWindow("Finished");
     }
+
+    private static void LogToWindow(String text) {
+        form.Log(text);
+    }
+
+    public static String GetOutputFileName(String filename) {
+        String s = outputFolder.replaceAll("/$", "");
+        return s + File.separator  + filename;
+    }
+
+
+
 
     public static void WriteReport(String filename)
     {
+        LogToWindow("Writing " + filename);
         try(  PrintStream out = new PrintStream(new File(filename)) ){
             for(Workshop w: Workshops.values()) {
                 out.println(w.toString());
@@ -166,6 +201,7 @@ public class SteamChoice {
 
     public static void WriteBadluck(String filename)
     {
+        LogToWindow("Writing " + filename);
         try(  PrintStream out = new PrintStream(new File(filename)) ){
             Workshop dworkshop = new Workshop(0, "", "", "");
             Session dsession = new Session(dworkshop,0,0);
@@ -199,6 +235,7 @@ public class SteamChoice {
 
     public static void WriteStatistics(String filename)
     {
+        LogToWindow("Writing " + filename);
         try(  PrintStream out = new PrintStream(new File(filename)) ){
             Workshop dworkshop = new Workshop(0, "", "", "");
             Session dsession = new Session(dworkshop,0,0);
@@ -226,6 +263,7 @@ public class SteamChoice {
 
     public static void WriteSummary(String filename)
     {
+        LogToWindow("Writing " + filename);
         try(  PrintStream out = new PrintStream(new File(filename)) ){
             out.println("");
             out.println("");
@@ -324,6 +362,7 @@ public class SteamChoice {
 
     public static void WriteCards(String filename)
     {
+        LogToWindow("Writing " + filename);
         Workshop dworkshop = new Workshop(0, "", "", "");
         Session dsession = new Session(dworkshop,0,0);
         try(  PrintStream out = new PrintStream(new File(filename)) ){
@@ -347,6 +386,7 @@ public class SteamChoice {
 
     public static void AssignSessions(List<Session> s) {
 
+        LogToWindow("Assigning seats");
         for(int i = 1; i <= 6; i ++) {
 
             // find all sessions of this choice
@@ -374,6 +414,8 @@ public class SteamChoice {
                             }
                     );
         }
+
+        if (!assignRandomly) return;
 
         int snum = Students.stream().mapToInt(st -> st.getSessions().size()).max().getAsInt();
 
@@ -450,9 +492,10 @@ public class SteamChoice {
     }
 
     private static void readStudents() {
-        String spath = "./data/students.tsv";
+        String spath = studentDataFile;
+        LogToWindow("Reading " + spath);
         // reading students
-        System.out.println("== Reading students from '" + Paths.get(spath) + "' ==");
+        LogToWindow("== Reading students from '" + Paths.get(spath) + "' ==");
         try (Stream<String> stream = Files.lines(Paths.get(spath))) {
             stream
                     .skip(1) // first should be the header
@@ -461,18 +504,22 @@ public class SteamChoice {
                         Students.add(ss);
                     });
         }
+        catch (java.lang.ArrayIndexOutOfBoundsException ex1) {
+            LogToWindow("Student file format is not recognized, it should contain tab-delimited values!");
+        }
         catch (Exception ex)
         {
-            System.out.println(ex);
+            LogToWindow(ex.toString());
         }
-        System.out.println("== Students read, total " + Students.size() + " entries ==");
+        LogToWindow("== Students read, total " + Students.size() + " entries ==");
     }
 
     private static void readWorkshops() {
-        String wpath = "./data/workshops.tsv";
+        String wpath = workshopDataFile;
+        LogToWindow("Reading " + wpath);
 
         // reading workshops first -- they have no dependencies
-        System.out.println("== Reading workshops from '" + Paths.get(wpath) + "' ==");
+        LogToWindow("== Reading workshops from '" + Paths.get(wpath) + "' ==");
         try (Stream<String> stream = Files.lines(Paths.get(wpath))) {
             stream
                     .skip(1) // first should be the header
@@ -481,11 +528,14 @@ public class SteamChoice {
                         Workshops.put(ww.getId(),ww);
                     });
         }
+        catch (java.lang.ArrayIndexOutOfBoundsException ex1) {
+            LogToWindow("Workshop file format is not recognized, it should contain tab-delimited values!");
+        }
         catch (Exception ex)
         {
-            System.out.println(ex);
+            LogToWindow(ex.toString());
         }
-        System.out.println("== Workshops read, total " + Workshops.size() + " entries ==");
+        LogToWindow("== Workshops read, total " + Workshops.size() + " entries ==");
     }
 
 }
