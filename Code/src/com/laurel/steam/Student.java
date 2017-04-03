@@ -63,12 +63,12 @@ public class Student {
 
     public static Student FromString(String s) {
 
-        String[] ss = s.split("\\t");
+        String[] ss = s.split(",");
 
         Student st = new Student(ss[1],ss[0],ss[2]);
 
-        for(int i = 1; i <= 6;i++) {
-            if (ss[i + 2] == "0") break;
+        for(int i = 1; i < ss.length - 2;i++) {
+            if (ss[i+2].trim() == "" || ss[i + 2] == "0") break;
 
             Choice es = new Choice(st, i, SteamChoice.Workshops.get(Integer.parseInt(ss[i + 2])));
 
