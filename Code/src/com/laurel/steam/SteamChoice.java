@@ -245,7 +245,7 @@ public class SteamChoice {
             for(Student s: Students.stream().sorted((l,r) -> l.getLastName().compareToIgnoreCase(r.getLastName())).collect(Collectors.toList())) {
                 String prefs = String.join("  ", s.getPreferences().values().stream().map( c -> (c.isAssigned()) ? Integer.toString(c.getSession().getPosition()) : "*").collect(Collectors.toList()));
                 out.println(
-                        String.format( "%1$-30s%2$-13s %3$6f   %4$13s",
+                        String.format( "%1$-30s%2$-13s %3$6f   %4$-13s",
                                 s.getLastName() + ", " + s.getFirstName(),
                                 s.getTeacher(),
                                 s.getFitness(),
@@ -288,7 +288,7 @@ public class SteamChoice {
                                 .collect(Collectors.groupingBy(Choice::getPosition,Collectors.counting()));
 
                 out.println(
-                        String.format("%1$6d%2$10d  /%3$3d     %4$-7d%5$-23s%6$4d%7$4d%8$4d%9$4d%10$4d",
+                        String.format("%1$6d%2$10d  /%3$3d     %4$-7d%5$-23.20s%6$4d%7$4d%8$4d%9$4d%10$4d",
                                 w.getId(),
                                     enrolled,
                                     available,
@@ -339,7 +339,7 @@ public class SteamChoice {
                                 .collect(Collectors.groupingBy(Session::getPosition,Collectors.counting()));
 
                 out.println(
-                        String.format("%1$6d%2$10d  /%3$3d     %4$-7d%5$-23s%6$4d%7$4d%8$4d%9$4d%10$4d",
+                        String.format("%1$6d%2$10d  /%3$3d     %4$-7d%5$-23.20s%6$4d%7$4d%8$4d%9$4d%10$4d",
                                 w.getId(),
                                 enrolled,
                                 available,
@@ -445,7 +445,7 @@ public class SteamChoice {
                           if (!st.getSessions().values().stream().map(Session::getWorkshop).collect(Collectors.toList()).contains(ss.getWorkshop()) // not already in this workshop
                                 && st.getSessions().values().stream().mapToInt(Session::getPosition).noneMatch(i -> i == ss.getPosition()) // and this slot is not reserverd
                                   ) {
-                              Choice newch = new Choice(st,6,ss.getWorkshop());
+                              Choice newch = new Choice(st,7,ss.getWorkshop());
                               st.getPreferences().put(ss.getPosition(), newch);
                               ss.assignChoice(newch);
                               Choices.add(newch);

@@ -49,7 +49,7 @@ public class Workshop {
 
     public static Workshop FromString(String s) {
 
-        String[] ss = s.split(",");
+        String[] ss = s.split("[,\\t]");
 
         Workshop w = new Workshop(Integer.parseInt(ss[0]), ss[6], ss[8], ss[7]);
 

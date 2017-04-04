@@ -44,7 +44,7 @@ public class MainForm {
 
 
     public MainForm() {
-
+        assignStudentsRandomlyCheckBox.setSelected(true);
         workshopFileDataField.setText("./data/workshops.tsv");
         studentFileDataField.setText("./data/students.tsv");
         outputFolderDataField.setText("./data");
@@ -123,6 +123,7 @@ public class MainForm {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setResizable(false);
+
         frame.setVisible(true);
 
         return mf;

@@ -40,6 +40,10 @@ public class Student {
         return Fitness;
     }
 
+    private double getFitnessValue(int pos) {
+        if (pos >= 0 && pos < FITNESS_VALUES.length) return FITNESS_VALUES[pos];
+        else return 0;
+    }
 
     public void updateFitness() {
         int nchoices = getPreferences().size();
@@ -47,7 +51,9 @@ public class Student {
         Fitness = 0.0;
         getPreferences()
                 .forEach(
-                        (k,v) -> { if (v.isAssigned()) Fitness +=  FITNESS_VALUES[nchoices - v.getPosition()] / maxfit; }
+                        (k,v) -> {
+                            if (v.isAssigned()) Fitness +=  getFitnessValue(nchoices - v.getPosition()) / maxfit;
+                        }
                 );
     }
 
@@ -63,7 +69,7 @@ public class Student {
 
     public static Student FromString(String s) {
 
-        String[] ss = s.split(",");
+        String[] ss = s.split("[,\\t]");
 
         Student st = new Student(ss[1],ss[0],ss[2]);
 
